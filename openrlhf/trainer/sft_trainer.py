@@ -73,24 +73,33 @@ class SFTTrainer(ABC):
         self._wandb = None
         self._tensorboard = None
         if self.strategy.args.use_wandb and self.strategy.is_rank_0():
-            import wandb
+            # import wandb
 
-            self._wandb = wandb
-            if not wandb.api.api_key:
-                wandb.login(key=strategy.args.use_wandb)
-            wandb.init(
-                entity=strategy.args.wandb_org,
+            # self._wandb = wandb
+            # if not wandb.api.api_key:
+            #     wandb.login(key=strategy.args.use_wandb)
+            # wandb.init(
+            #     entity=strategy.args.wandb_org,
+            #     project=strategy.args.wandb_project,
+            #     group=strategy.args.wandb_group,
+            #     name=strategy.args.wandb_run_name,
+            #     config=strategy.args.__dict__,
+            #     reinit=True,
+            # )
+
+            # wandb.define_metric("train/global_step")
+            # wandb.define_metric("train/*", step_metric="train/global_step", step_sync=True)
+            # wandb.define_metric("eval/global_step")
+            # wandb.define_metric("eval/*", step_metric="eval/global_step", step_sync=True)
+            import swanlab
+
+            self._wandb = swanlab
+            self._wandb.login(api_key=strategy.args.use_wandb)
+            self._wandb.init(
                 project=strategy.args.wandb_project,
-                group=strategy.args.wandb_group,
                 name=strategy.args.wandb_run_name,
                 config=strategy.args.__dict__,
-                reinit=True,
             )
-
-            wandb.define_metric("train/global_step")
-            wandb.define_metric("train/*", step_metric="train/global_step", step_sync=True)
-            wandb.define_metric("eval/global_step")
-            wandb.define_metric("eval/*", step_metric="eval/global_step", step_sync=True)
 
         # Initialize TensorBoard writer if wandb is not available
         if self.strategy.args.use_tensorboard and self._wandb is None and self.strategy.is_rank_0():
