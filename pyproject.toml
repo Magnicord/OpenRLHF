@@ -36,7 +36,6 @@ dependencies=[
 [project.optional-dependencies]
 # vllm = ["vllm==0.10.0"]
 # vllm_latest = ["vllm>0.10.0"]
-# vllm = ["vllm>=0.10.0"]
 ring = ["ring_flash_attn"]
 liger = ["liger_kernel"]
 
